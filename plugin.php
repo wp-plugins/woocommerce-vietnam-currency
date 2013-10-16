@@ -3,7 +3,7 @@
  * Plugin Name: Woocommerce Vietnam Currency
  * Plugin URI: http://thachpham.com
  * Description: Thêm loại tiền tệ Việt Nam Đồng (VNĐ) vào Woocommerce và tích hợp tính năng tự chuyển tỷ giá VNĐ sang USD để sử dụng thanh toán qua Paypal.
- * Version: 1.0
+ * Version: 1.1
  * Author: Thach Pham
  * Author URI: http://thachpham.com
  * License: GPL2
