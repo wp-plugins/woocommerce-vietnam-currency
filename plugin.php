@@ -3,7 +3,7 @@
  * Plugin Name: Woocommerce Vietnam Currency
  * Plugin URI: http://thachpham.com
  * Description: Thêm loại tiền tệ Việt Nam Đồng (VNĐ) vào Woocommerce và tích hợp tính năng tự chuyển tỷ giá VNĐ sang USD để sử dụng thanh toán qua Paypal.
- * Version: 1.1
+ * Version: 1.2
  * Author: Thach Pham
  * Author URI: http://thachpham.com
  * License: GPL2
@@ -106,24 +106,35 @@ function add_vnd_currency_symbol( $currency_symbol, $currency ) {
 */
 add_filter('woocommerce_paypal_args', 'vnd_to_usd'); 
 function vnd_to_usd($paypal_args){ 
-if ( $paypal_args['currency_code'] == 'VND'){
-$convert_rate = (get_option('vnd_convert_rate') == '') ? 21083.7 : get_option('vnd_convert_rate');
-$paypal_args['currency_code'] = 'USD'; // Ký hiệu của loại tiền cần chuyển ra.
-$i = 1; 
+	if ( $paypal_args['currency_code'] == 'VND'){
+		$convert_rate = (get_option('vnd_convert_rate') == '') ? 21083.7 : get_option('vnd_convert_rate');
+		$paypal_args['currency_code'] = 'USD'; // Ký hiệu của loại tiền cần chuyển ra.
+		$i = 1; 
 
-while (isset($paypal_args['amount_' . $i])) { 
-$paypal_args['amount_' . $i] = round( $paypal_args['amount_' . $i] / $convert_rate, 2); 
-++$i; 
-} 
+		while (isset($paypal_args['amount_' . $i])) { 
+			$paypal_args['amount_' . $i] = round( $paypal_args['amount_' . $i] / $convert_rate, 2); 
+			++$i; 
+		}
+		
+		/* Fix VND for coupon usage. Thanks @Pham Duy Thanh 
+		 */
+		if(isset($paypal_args['discount_amount_cart']) && $paypal_args['discount_amount_cart'] > 0){
 
-} 
-return $paypal_args; 
+			$paypal_args['discount_amount_cart'] = round( $paypal_args['discount_amount_cart'] / $convert_rate, 2);
+
+		}		
+
+	} 
+	return $paypal_args; 
 }
 
-/* Endable VND PP */
+/*
+ * Fix 
+
+/* Enable VND for PayPal */
 add_filter( 'woocommerce_paypal_supported_currencies', 'add_bgn_paypal_valid_currency' );     
     function add_bgn_paypal_valid_currency( $currencies ) {  
-     array_push ( $currencies , 'VND' );
-     return $currencies;  
-    } 
+    array_push ( $currencies , 'VND' );
+    return $currencies;  
+} 
 
